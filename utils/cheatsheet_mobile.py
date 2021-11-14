@@ -11,8 +11,10 @@ from common import validate_toml, get_tt_version
 if (sys.version_info.major, sys.version_info.minor) < (3, 6):
     raise Exception("need Python 3.6 or later")
 
+# TODOs:
+#  - parse backticks as code
+
 # notes on template:
-#  - 
 #  - wipe style from anchors https://stackoverflow.com/a/8919740
 #  - viewport & media queries https://stackoverflow.com/a/32155505
 #  - viewport units discussion https://alligator.io/css/viewport-units/
@@ -28,8 +30,12 @@ CHEATSHEET_PAGE_TEMPLATE = Template("""
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&family=Roboto:wght@500&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <style type="text/css">
-body {background: #eeeef2; color #222228;}
-a {color: inherit; text-decoration: inherit;}
+body {
+    background: #eeeef2; color: #222228;
+}
+a {
+    color: inherit; text-decoration: inherit;
+}
 .links {
     /* style */
     font-family: 'Roboto Mono', monospace; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; padding: 1%; font-size: larger;
