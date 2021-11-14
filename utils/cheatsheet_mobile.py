@@ -11,6 +11,12 @@ from common import validate_toml, get_tt_version
 if (sys.version_info.major, sys.version_info.minor) < (3, 6):
     raise Exception("need Python 3.6 or later")
 
+# notes on template:
+#  - 
+#  - wipe style from anchors https://stackoverflow.com/a/8919740
+#  - viewport & media queries https://stackoverflow.com/a/32155505
+#  - viewport units discussion https://alligator.io/css/viewport-units/
+
 CHEATSHEET_PAGE_TEMPLATE = Template("""
 <!DOCTYPE html>
 <html>
@@ -19,12 +25,36 @@ CHEATSHEET_PAGE_TEMPLATE = Template("""
 <link id="favicon" rel="shortcut icon" type="image/png" href="${encoded_favicon}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto&family=Roboto+Mono:wght@600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&family=Roboto:wght@500&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <style type="text/css">
 body {background: #eeeef2; color #222228;}
 a {color: inherit; text-decoration: inherit;}
-.links {font-family: 'Roboto Mono', monospace;}
-.content {font-family: 'Roboto', sans-serif;}
+.links {
+    /* style */
+    font-family: 'Roboto Mono', monospace; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; padding: 1%; font-size: larger;
+    /* positioning */
+    height: 100vh; width: 10vw; position: fixed; top: 0; left: 0;
+}
+.content {
+    /* style */
+    padding: 1%;
+    /* positioning */
+    height: 100vh; width; 90vw; position: fixed; top: 0; left: 10vw;
+}
+.fixturtle {
+    /* I suffer for my art */
+    transform: rotate(180deg); display: inline-block;
+}
+.prototype {
+    font-family: 'Roboto Mono', monospace; 
+}
+.short {
+    font-family: 'Roboto', sans-serif; font-size: smaller; margin-bottom: 0.5em;
+}
+.description {
+
+}
 </style>
 </head>
 <body>
@@ -84,13 +114,24 @@ def encode_favicon():
 
 def section_links():
     output = ""
-    for section in OPS_SECTIONS:
-        output += f"""<div class="section"><a href="#{section[0]}">{section[1]}</a></div>"""
+    for (section, title) in reversed(OPS_SECTIONS):
+        section_text = title if section != "turtle" else f"""<span class="fixturtle">{title}</span>"""
+        output += f"""<span class="section"><a href="#{section}">{section_text}</a></span>\n"""
+
     return output
 
 
 def section_content():
-    return "Lorem Ipsum"
+    output = ""
+    for (section, title) in OPS_SECTIONS:
+        toml_file = Path(OP_DOCS_DIR, section + ".toml")
+        ops = toml.loads(toml_file.read_text())
+        validate_toml(ops)
+        for op in ops.values():
+            output += f"""<div class="prototype">{op["prototype"]}</div>\n"""
+            output += f"""<div class="short">{op["short"]}</div>\n"""
+    
+    return output
 
 def cheatsheet_mobile():
     template_dict = {
