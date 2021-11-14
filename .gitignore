@@ -43,6 +43,7 @@
 
 # Python
 __pycache__/
+.python3/
 
 # Build outputs
 /src/match_token.c

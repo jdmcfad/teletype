@@ -1,6 +1,6 @@
 .PHONY: build clean
 
-build: teletype.pdf teletype.html cheatsheet/cheatsheet.pdf
+build: teletype.pdf teletype.html cheatsheet/cheatsheet.pdf cheatsheet/cheatsheet.html
 
 clean:
 	rm -f teletype.pdf && \
@@ -23,3 +23,6 @@ cheatsheet/include.tex: $(wildcard ops/*.toml) ../utils/cheatsheet.py
 
 cheatsheet/cheatsheet.pdf: cheatsheet/cheatsheet.tex cheatsheet/include.tex
 	cd cheatsheet && latexmk -xelatex cheatsheet.tex
+
+cheatsheet/cheatsheet.html:
+	../utils/cheatsheet_mobile.py $@
