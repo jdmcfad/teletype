@@ -46,6 +46,7 @@ __pycache__/
 .python3/
 
 # Build outputs
+index.html
 /src/match_token.c
 /src/scanner.c
 /simulator/tt
