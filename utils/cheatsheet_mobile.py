@@ -44,7 +44,7 @@ h1 {
 }
 .links {
     /* style */
-    font-family: 'Roboto Mono', monospace; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; padding: 1% 1% 3% 1%; font-size: larger; font-weight: bolder;
+    font-family: 'Roboto Mono', monospace; padding: 0% 0% 3% 0%; font-size: larger; font-weight: bolder; overflow: hidden; padding-top: 1em;
     /* positioning */
     height: 100vh; width: 10vw; position: fixed; top: 0; left: 0;
 }
@@ -52,10 +52,19 @@ h1 {
     /* style */
     padding: 1%; border-left: 1px solid #aaaab0; overflow: hidden;
     /* positioning */
-    height: 100vh; width: 90vw; position: fixed; top: 0; left: 10vw;
+    height: 100vh; width: 85vw; position: fixed; top: 0; left: 10vw;
 }
-.scrollable {
-    overflow-y: scroll; height: 100%; width: 100%; padding-right: 3em; box-sizing: content-box;
+.content-scrollable {
+    overflow-y: scroll; height: 100%; width: 100%; box-sizing: content-box; padding-right: 3em;
+}
+.links-scrollable {
+    overflow-x: hidden; overflow-y: scroll; height: 100%; width: 100%; box-sizing: content-box; white-space: nowrap; padding-top: 1em; padding-right: 1em; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; 
+    -ms-overflow-style: none; /* for Internet Explorer, Edge */
+    scrollbar-width: none; /* for Firefox */
+    overflow-y: scroll; 
+}
+.links-scrollable::-webkit-scrollbar {
+    display: none; /* for Chrome, Safari, and Opera */
 }
 .fixturtle {
     /* I suffer for my art */
@@ -71,8 +80,13 @@ h1 {
     font-family: 'Roboto', sans-serif; font-size: smaller; letter-spacing: -0.05em;
 }
 </style>
+<script>
+function scrollLinksToTop() {
+    document.getElementById("variables-link").scrollIntoView()
+}
+</script>
 </head>
-<body>
+<body onload="scrollLinksToTop()">
 <div class="links">${section_links}</div>
 <div class="content">${section_content}</div>
 </body>
@@ -90,37 +104,37 @@ FAVICON_FILE = DOCS_DIR / "img" / "cheatsheet-favicon.png"
 VERSION_STR = " ".join(["Teletype", TT_VERSION["tag"], "Cheatsheet"])
 
 OPS_SECTIONS = [
-    ("variables",     "Var",    "Variables"),
-    ("hardware",      "H/W",    "Hardware"),
-    ("patterns",      "Pat",    "Patterns"),
-    ("controlflow",   "Flow",   "Control Flow"),
-    ("maths",         "Math",   "Math"),
-    ("metronome",     "Metro",  "Metronome"),
-    ("delay",         "Del",    "Delay"),
-    ("stack",         "Stack",  "Stack"),
-    ("queue",         "Queue",  "Queue"),
-    ("seed",          "Seed",   "Seed"),
-    ("turtle",        "🐢",     "Turtle 🐢"),
-    # ("grid",          "Grid",          ),
-    # ("midi_in",       "MIDI In",       ),
-    # ("i2c",           "Generic I2C",   ),
-    # ("ansible",       "Ansible",       ),
-    # ("whitewhale",    "Whitewhale",    ),
-    # ("meadowphysics", "Meadowphysics", ),
-    # ("earthsea",      "Earthsea",      ),
-    # ("orca",          "Orca",          ),
-    # ("justfriends",   "Just Friends",  ),
-    # ("wslash",        "W/",            ),
-    # ("er301",         "ER-301",        ),
-    # ("fader",         "Fader",         ),
-    # ("matrixarchate", "Matrixarchate", ),
-    # ("telex_i",       "TELEXi",        ),
-    # ("telex_o",       "TELEXo",        ),
-    # ("disting",       "Disting EX",    ),
-    # ("wslashdelay",   "W/2.0 delay",   ),
-    # ("wslashsynth",   "W/2.0 synth",   ),
-    # ("wslashtape",    "W/2.0 tape",    ),
-    # ("crow",          "Crow",          ),
+    ("variables",     "Var",        "Variables"),
+    ("hardware",      "H/W",        "Hardware"),
+    ("patterns",      "Pat",        "Patterns"),
+    ("controlflow",   "Flow",       "Control Flow"),
+    ("maths",         "Math",       "Math"),
+    ("metronome",     "Metro",      "Metronome"),
+    ("delay",         "Del",        "Delay"),
+    ("stack",         "Stack",      "Stack"),
+    ("queue",         "Queue",      "Queue"),
+    ("seed",          "Seed",       "Seed"),
+    ("turtle",        "🐢",         "Turtle 🐢"),
+    ("grid",          "Grid",       "Grid"),
+    ("midi_in",       "MIDI",       "MIDI In"),
+    ("i2c",           "I2C",        "Generic I2C"),
+    ("ansible",       "Ansible",    "Ansible"),
+    ("whitewhale",    "Whale",      "Whitewhale"),
+    ("meadowphysics", "Meadow",     "Meadowphysics"),
+    ("earthsea",      "Earth",      "Earthsea"),
+    ("orca",          "Orca",       "Orca"),
+    ("justfriends",   "Friends",    "Just Friends"),
+    ("wslash",        "W/",         "W/"),
+    ("er301",         "ER-301",     "ER-301"),
+    ("fader",         "Fader",      "Fader"),
+    ("matrixarchate", "Matrix",     "Matrixarchate"),
+    ("telex_i",       "TXi",        "TELEXi"),
+    ("telex_o",       "TXo",        "TELEXo"),
+    ("disting",       "Disting",    "Disting EX"),
+    ("wslashdelay",   "W/delay",    "W/2.0 delay",),
+    ("wslashsynth",   "W/synth",    "W/2.0 synth",),
+    ("wslashtape",    "W/tape",     "W/2.0 tape",),
+    ("crow",          "Crow",       "Crow"),
 ]
 
 def encode_favicon():
@@ -144,16 +158,16 @@ def parse_toml_text_to_html(text):
     return text
 
 def section_links():
-    output = ""
+    output = """<div class="links-scrollable">\n"""
     for (section, abbrev, _title) in reversed(OPS_SECTIONS):
-        link_text = abbrev if section != "turtle" else f"""<span class="fixturtle">{abbrev}</span>"""
-        output += f"""<span class="section"><a href="#{section}">{link_text}</a></span>\n"""
-
+        link_text = abbrev if section != "turtle" else f"""<span class="fixturtle">&nbsp;{abbrev}&nbsp;&nbsp;</span>"""
+        output += f"""<span class="section"><a href="#{section}" id="{section}-link">{link_text}</a></span>\n"""
+    output += "</div>" # close scrollable
     return output
 
 
 def section_content():
-    output = """<div class="scrollable">\n"""
+    output = """<div class="content-scrollable">\n"""
     for (section, _abbrev, title) in OPS_SECTIONS:
         toml_file = Path(OP_DOCS_DIR, section + ".toml")
         ops = toml.loads(toml_file.read_text())
