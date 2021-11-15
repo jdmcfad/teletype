@@ -158,7 +158,8 @@ def parse_toml_text_to_html(text):
     return text
 
 def section_links():
-    output = """<div class="links-scrollable">\n&nbsp;\n"""
+    # I know formatting with nonbreaking spaces is a cardinal sin in the year of our Lord 2021 but... I give up
+    output = """<div class="links-scrollable">\n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\n"""
     for (section, abbrev, _title) in reversed(OPS_SECTIONS):
         link_text = abbrev if section != "turtle" else f"""<span class="fixturtle">&nbsp;{abbrev}&nbsp;&nbsp;</span>"""
         output += f"""<span class="section"><a href="#{section}" id="{section}-link">{link_text}</a></span>\n"""
