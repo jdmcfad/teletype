@@ -27,7 +27,7 @@ CHEATSHEET_PAGE_TEMPLATE = Template("""
 <link id="favicon" rel="shortcut icon" type="image/png" href="${encoded_favicon}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600&family=Roboto:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@600;700&family=Roboto:wght@500&display=swap" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <style type="text/css">
 body {
@@ -36,30 +36,39 @@ body {
 a {
     color: inherit; text-decoration: inherit;
 }
+code {
+    font-family: 'Roboto Mono', monospace;
+}
+h1 {
+    margin: 0px 0px 0.3em 0px; padding: 0.3em 0px 0px 0px; font-family: 'Roboto Mono', monospace; border-bottom: 1px solid #aaaab0;
+}
 .links {
     /* style */
-    font-family: 'Roboto Mono', monospace; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; padding: 1%; font-size: larger;
+    font-family: 'Roboto Mono', monospace; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; padding: 1% 1% 3% 1%; font-size: larger; font-weight: bolder;
     /* positioning */
     height: 100vh; width: 10vw; position: fixed; top: 0; left: 0;
 }
 .content {
     /* style */
-    padding: 1%;
+    padding: 1%; border-left: 1px solid #aaaab0; overflow: hidden;
     /* positioning */
-    height: 100vh; width; 90vw; position: fixed; top: 0; left: 10vw;
+    height: 100vh; width: 90vw; position: fixed; top: 0; left: 10vw;
+}
+.scrollable {
+    overflow-y: scroll; height: 100%; width: 100%; padding-right: 20px; box-sizing: content-box;
 }
 .fixturtle {
     /* I suffer for my art */
     transform: rotate(180deg); display: inline-block;
 }
 .prototype {
-    font-family: 'Roboto Mono', monospace; 
+    font-family: 'Roboto Mono', monospace; margin-bottom: 0.1em; font-weight: bolder;
 }
 .short {
-    font-family: 'Roboto', sans-serif; font-size: smaller; margin-bottom: 0.5em;
+    font-family: 'Roboto', sans-serif; margin-bottom: 0.75em;
 }
 .description {
-
+    font-family: 'Roboto', sans-serif; font-size: smaller; letter-spacing: -0.05em;
 }
 </style>
 </head>
@@ -81,17 +90,17 @@ FAVICON_FILE = DOCS_DIR / "img" / "cheatsheet-favicon.png"
 VERSION_STR = " ".join(["Teletype", TT_VERSION["tag"], "Cheatsheet"])
 
 OPS_SECTIONS = [
-    ("variables",     "Var"),
-    ("hardware",      "H/W"),
-    ("patterns",      "Pat"),
-    ("controlflow",   "Flow"),
-    ("maths",         "Math"),
-    ("metronome",     "Metro"),
-    ("delay",         "Del"),
-    ("stack",         "Stack"),
-    ("queue",         "Queue"),
-    ("seed",          "Seed"),
-    ("turtle",        "🐢"),
+    ("variables",     "Var",    "Variables"),
+    ("hardware",      "H/W",    "Hardware"),
+    ("patterns",      "Pat",    "Patterns"),
+    ("controlflow",   "Flow",   "Control Flow"),
+    ("maths",         "Math",   "Math"),
+    ("metronome",     "Metro",  "Metronome"),
+    ("delay",         "Del",    "Delay"),
+    ("stack",         "Stack",  "Stack"),
+    ("queue",         "Queue",  "Queue"),
+    ("seed",          "Seed",   "Seed"),
+    ("turtle",        "🐢",     "Turtle 🐢"),
     # ("grid",          "Grid",          ),
     # ("midi_in",       "MIDI In",       ),
     # ("i2c",           "Generic I2C",   ),
@@ -118,25 +127,43 @@ def encode_favicon():
     encoded_image = base64.b64encode(open(FAVICON_FILE, "rb").read()).decode('utf-8')
     return f"data:image/png;base64,{encoded_image}"
 
+def parse_toml_text_to_html(text):
+    # (I started doing this with regex and realized I was going to actually die)
+    if "`" in text:
+        joined = ""
+        substrings = text.split("`")
+        for ii, substr in enumerate(substrings):
+            joined += substr
+            is_last = ii == len(substrings) - 1
+            if is_last: continue
+            if ii % 2 == 0:
+                joined += "<code>"
+            else:
+                joined += "</code>"
+        text = joined
+    return text
+
 def section_links():
     output = ""
-    for (section, title) in reversed(OPS_SECTIONS):
-        section_text = title if section != "turtle" else f"""<span class="fixturtle">{title}</span>"""
-        output += f"""<span class="section"><a href="#{section}">{section_text}</a></span>\n"""
+    for (section, abbrev, _title) in reversed(OPS_SECTIONS):
+        link_text = abbrev if section != "turtle" else f"""<span class="fixturtle">{abbrev}</span>"""
+        output += f"""<span class="section"><a href="#{section}">{link_text}</a></span>\n"""
 
     return output
 
 
 def section_content():
-    output = ""
-    for (section, title) in OPS_SECTIONS:
+    output = """<div class="scrollable">\n"""
+    for (section, _abbrev, title) in OPS_SECTIONS:
         toml_file = Path(OP_DOCS_DIR, section + ".toml")
         ops = toml.loads(toml_file.read_text())
         validate_toml(ops)
+        output += f"""<h1 id="{section}">{title}</h1>"""
         for op in ops.values():
             output += f"""<div class="prototype">{op["prototype"]}</div>\n"""
-            output += f"""<div class="short">{op["short"]}</div>\n"""
-    
+            short_text = parse_toml_text_to_html(op["short"])
+            output += f"""<div class="short">{short_text}</div>\n"""
+    output += "</div>" # close scrollable
     return output
 
 def cheatsheet_mobile():
