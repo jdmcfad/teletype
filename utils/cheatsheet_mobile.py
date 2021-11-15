@@ -11,9 +11,6 @@ from common import validate_toml, get_tt_version
 if (sys.version_info.major, sys.version_info.minor) < (3, 6):
     raise Exception("need Python 3.6 or later")
 
-# TODOs:
-#  - parse backticks as code
-
 # notes on template:
 #  - wipe style from anchors https://stackoverflow.com/a/8919740
 #  - viewport & media queries https://stackoverflow.com/a/32155505
