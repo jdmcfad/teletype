@@ -44,7 +44,7 @@ h1 {
 }
 .links {
     /* style */
-    font-family: 'Roboto Mono', monospace; padding: 0% 0% 3% 0%; font-size: larger; font-weight: bolder; overflow: hidden; padding-top: 1em;
+    font-family: 'Roboto Mono', monospace; font-size: larger; font-weight: bolder; overflow: hidden; padding: 0;
     /* positioning */
     height: 100vh; width: 10vw; position: fixed; top: 0; left: 0;
 }
@@ -58,7 +58,7 @@ h1 {
     overflow-y: scroll; height: 100%; width: 100%; box-sizing: content-box; padding-right: 3em;
 }
 .links-scrollable {
-    overflow-x: hidden; overflow-y: scroll; height: 100%; width: 100%; box-sizing: content-box; white-space: nowrap; padding-top: 1em; padding-right: 1em; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; 
+    overflow-x: hidden; overflow-y: scroll; height: 100%; width: 100%; box-sizing: content-box; white-space: nowrap; padding-right: 0.3em; writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg); text-align: right; 
     -ms-overflow-style: none; /* for Internet Explorer, Edge */
     scrollbar-width: none; /* for Firefox */
     overflow-y: scroll; 
@@ -82,7 +82,7 @@ h1 {
 </style>
 <script>
 function scrollLinksToTop() {
-    document.getElementById("variables-link").scrollIntoView()
+    document.getElementById("links-top").scrollIntoView()
 }
 </script>
 </head>
@@ -158,11 +158,11 @@ def parse_toml_text_to_html(text):
     return text
 
 def section_links():
-    output = """<div class="links-scrollable">\n"""
+    output = """<div class="links-scrollable">\n&nbsp;\n"""
     for (section, abbrev, _title) in reversed(OPS_SECTIONS):
         link_text = abbrev if section != "turtle" else f"""<span class="fixturtle">&nbsp;{abbrev}&nbsp;&nbsp;</span>"""
         output += f"""<span class="section"><a href="#{section}" id="{section}-link">{link_text}</a></span>\n"""
-    output += "</div>" # close scrollable
+    output += """<span id="links-top">&nbsp;</span></div>""" # close scrollable
     return output
 
 
