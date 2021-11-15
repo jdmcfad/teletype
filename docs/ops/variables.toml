@@ -30,7 +30,7 @@ from there with subsequent reads.
 
 Setting `DRUNK.MIN` and `DRUNK.MAX` controls the lower and upper bounds
 (inclusive) that `DRUNK` can reach. `DRUNK.WRAP` controls whether the value can
-wrap around when it reaches it's bounds.
+wrap around when it reaches its bounds.
 """
 
 ["DRUNK.MIN"]
@@ -46,7 +46,7 @@ short = "set the upper bound for `DRUNK`, default `255`"
 ["DRUNK.WRAP"]
 prototype = "DRUNK.WRAP"
 prototype_set = "DRUNK.WRAP x"
-short = "should `DRUNK` wrap around when it reaches it's bounds, default `0`"
+short = "should `DRUNK` wrap around when it reaches its bounds, default `0`"
 
 [FLIP]
 prototype = "FLIP"
